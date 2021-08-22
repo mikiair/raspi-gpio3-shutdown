@@ -1,0 +1,17 @@
+#!/bin/bash
+
+set -e
+
+cd "$(dirname "$0")/.."
+
+echo "=> Stopping raspi-gpio3-shutdown service...\n"
+
+sudo systemctl stop raspi-gpio3-shutdown
+sudo systemctl disable raspi-gpio3-shutdown
+
+echo "=> Removing raspi-gpio3-shutdown service...\n"
+
+sudo rm -rf /lib/systemd/system/raspi-gpio3-shutdown.service
+sudo rm -rf /usr/local/bin/raspi-gpio3-shutdown.py
+
+echo "raspi-gpio3-shutdown service uninstalled.\n"
