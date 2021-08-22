@@ -11,13 +11,33 @@ sudo apt install python3-pigpio python3-gpiozero python3-systemd
 
 echo "Enabling and starting pigpiod service"
 
-# copy only if not existing! check!
-sudo cp gpiozero_pin_factory.conf /etc
+if [ ! -e /etc/gpiozero_pin_factory.conf ]
+  then
+    sudo cp gpiozero_pin_factory.conf /etc
+  else
+    echo "File '/etc/gpiozero_pin_factory.conf' already exists. Did not overwrite."
+fi
 
 sudo systemctl enable pigpiod
 sudo systemctl start pigpiod
 
-sudo cp raspi-gpio3-shutdown.conf /etc
+if [ -e /etc/raspi-gpio3-shutdown.conf ]
+  then
+    read "Overwrite existing configuration file '/etc/raspi-gpio3-shutdown.conf' (y/N)?" ov
+  else
+    ov = "y"
+fi
+
+if [ "$ov" == "y" -o "$ov" == "Y" ]
+  then
+    sudo cp raspi-gpio3-shutdown.conf /etc
+fi
+
+if  [ -e /usr/local/bin/raspi-gpio3-shutdown.py ]
+  then
+    echo "Updating service script '/usr/local/bin/raspi-gpio3-shutdown.py' (temporarily stopping service)"
+    sudo systemctl stop raspi-gpio3-shutdown
+fi
 
 sudo cp raspi-gpio3-shutdown.py /usr/local/bin/
 sudo chmod +x /usr/local/bin/raspi-gpio3-shutdown.py
@@ -25,10 +45,14 @@ sudo chmod +x /usr/local/bin/raspi-gpio3-shutdown.py
 sudo cp raspi-gpio3-shutdown.service /lib/systemd/system
 sudo chmod +x /lib/systemd/system/raspi-gpio3-shutdown.service
 
-echo "=> Starting raspi-gpio3-shutdown service..."
+if [ ! id -nGz "pi" | grep -qzxF "gpio" ]
+  then
+    sudo usermod -a -G gpio pi
+  else
+    echo "User 'pi' already belongs to group 'gpio'."
+fi
 
-# add to user group only if not contained
-sudo usermod -a -G gpio pi
+echo "Starting raspi-gpio3-shutdown service..."
 
 sudo systemctl enable raspi-gpio3-shutdown
 sudo systemctl daemon-reload

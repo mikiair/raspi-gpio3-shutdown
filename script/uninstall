@@ -4,14 +4,24 @@ set -e
 
 cd "$(dirname "$0")/.."
 
-echo "=> Stopping raspi-gpio3-shutdown service..."
+echo "Stopping raspi-gpio3-shutdown service..."
 
 sudo systemctl stop raspi-gpio3-shutdown
 sudo systemctl disable raspi-gpio3-shutdown
 
-echo "=> Removing raspi-gpio3-shutdown service..."
+echo "Removing raspi-gpio3-shutdown service..."
 
 sudo rm -rf /lib/systemd/system/raspi-gpio3-shutdown.service
 sudo rm -rf /usr/local/bin/raspi-gpio3-shutdown.py
 
-echo "raspi-gpio3-shutdown service uninstalled. Configuration is not removed."
+if [ -e /etc/raspi-gpio3-shutdown.conf ]
+  then
+    read "Delete '/etc/raspi-gpio3-shutdown.conf' configuration file? (y/N)" delfile
+    if [ "$delfile" == "y" -o "$delfile" == "Y" ]
+      then
+        echo "Deleting configuration file."
+        sudo rm -rf /etc/raspi-gpio3-shutdown.conf
+    fi
+fi
+
+echo "raspi-gpio3-shutdown service uninstalled."
