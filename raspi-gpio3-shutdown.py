@@ -3,8 +3,8 @@
 __author__ = "Michael Heise"
 __copyright__ = "Copyright (C) 2021 by Michael Heise"
 __license__ = "Apache License Version 2.0"
-__version__ = "0.0.1"
-__date__ = "08/21/2021"
+__version__ = "0.0.2"
+__date__ = "08/22/2021"
 
 """Configurable python service to run on Raspberry Pi
    and use GPIO3 (SCL) for system shutdown
@@ -70,7 +70,7 @@ class RaspiGPIOShutdown:
         self._log = log
         self._log.info("Initialized logging.")
 
-        pinf = type(gpiozero.Device._default_pin_factory()).__name__
+        pinf = type(GPIO.Device._default_pin_factory()).__name__
         self._log.info(f"GPIO Zero default pin factory: {pinf}")
         return
 
@@ -108,9 +108,9 @@ class RaspiGPIOShutdown:
                 if hold_time <= 0:
                     raise
             else:
-                hold_time = 1500
+                hold_time = 2
         except:
-            self._log.error("Invalid hold time! (only integer >0 allowed)")
+            self._log.error("Invalid hold time! (only integer >0 specifying time in seconds allowed)")
             return false
         
         try:
@@ -121,7 +121,7 @@ class RaspiGPIOShutdown:
             method_name = "config_" + buttonConfig[0]
             self._log.info(f"Configure GPIO3 with '{method_name}'")
             
-            configbtn = getattr(self, method_name, lambda: pass)
+            configbtn = getattr(self, method_name)
             configbtn()
 
             isValidGPIO = True
@@ -200,7 +200,10 @@ try:
         pass
 
     log.info("Initiate system shutdown after GPIO3 button event handled.")
-    subprocess.call(['shutdown', '-h', 'now'], shell=False)
+
+    import shlex
+    cmd = shlex.split("sudo shutdown -h now")
+    subprocess.call(cmd, shell=False)
 
 except Exception as e:
     if log:
