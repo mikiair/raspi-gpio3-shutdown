@@ -1,0 +1,7 @@
+#!/bin/bash
+
+echo "Restarting raspi-gpio3-shutdown service..."
+sudo systemctl restart raspi-gpio3-shutdown
+systemctl status raspi-gpio3-shutdown
+echo "Done."
+

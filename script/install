@@ -4,12 +4,19 @@ set -e
 
 cd "$(dirname "$0")/.."
 
-echo "Installing raspi-gpio3-shutdown service...\n"
+echo "Installing raspi-gpio3-shutdown service..."
 
+echo "Installing required packages"
 sudo apt install python3-pigpio python3-gpiozero python3-systemd
+
+echo "Enabling and starting pigpiod service"
 
 # copy only if not existing! check!
 sudo cp gpiozero_pin_factory.conf /etc
+
+sudo systemctl enable pigpiod
+sudo systemctl start pigpiod
+
 sudo cp raspi-gpio3-shutdown.conf /etc
 
 sudo cp raspi-gpio3-shutdown.py /usr/local/bin/
@@ -18,7 +25,7 @@ sudo chmod +x /usr/local/bin/raspi-gpio3-shutdown.py
 sudo cp raspi-gpio3-shutdown.service /lib/systemd/system
 sudo chmod +x /lib/systemd/system/raspi-gpio3-shutdown.service
 
-echo "=> Starting raspi-gpio3-shutdown service...\n"
+echo "=> Starting raspi-gpio3-shutdown service..."
 
 # add to user group only if not contained
 sudo usermod -a -G gpio pi
@@ -27,4 +34,4 @@ sudo systemctl enable raspi-gpio3-shutdown
 sudo systemctl daemon-reload
 sudo systemctl start raspi-gpio3-shutdown
 
-echo "raspi-gpio3-shutdown service installed.\n"
+echo "raspi-gpio3-shutdown service installed."
