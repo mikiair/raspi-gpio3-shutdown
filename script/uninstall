@@ -16,7 +16,7 @@ sudo rm -rf /usr/local/bin/raspi-gpio3-shutdown.py
 
 if [ -e /etc/raspi-gpio3-shutdown.conf ]
   then
-    read "Delete '/etc/raspi-gpio3-shutdown.conf' configuration file? (y/N)" delfile
+    read -p "Delete '/etc/raspi-gpio3-shutdown.conf' configuration file? (y/N)" delfile
     if [ "$delfile" == "y" -o "$delfile" == "Y" ]
       then
         echo "Deleting configuration file."
