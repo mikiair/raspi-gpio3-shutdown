@@ -6,8 +6,8 @@ cd "$(dirname "$0")/.."
 
 echo "Installing raspi-gpio3-shutdown service..."
 
-echo "Installing required packages"
-sudo apt install python3-pigpio python3-gpiozero python3-systemd
+echo "Installing pigpiod service"
+sudo apt install python3-pigpio
 
 echo "Enabling and starting pigpiod service"
 
@@ -20,6 +20,9 @@ fi
 
 sudo systemctl enable pigpiod
 sudo systemctl start pigpiod
+
+echo "Installing required packages"
+sudo apt install python3-gpiozero python3-systemd
 
 if [ -e /etc/raspi-gpio3-shutdown.conf ]
   then
