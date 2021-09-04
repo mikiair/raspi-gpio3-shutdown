@@ -3,11 +3,11 @@
 __author__ = "Michael Heise"
 __copyright__ = "Copyright (C) 2021 by Michael Heise"
 __license__ = "Apache License Version 2.0"
-__version__ = "0.0.2"
-__date__ = "08/22/2021"
+__version__ = "1.0.0"
+__date__ = "09/04/2021"
 
 """Configurable python service to run on Raspberry Pi
-   and use GPIO3 (SCL) for system shutdown
+   and use pin GPIO3 (SCL) to trigger system shutdown
 """
 
 #    Copyright 2021 Michael Heise (mikiair)
@@ -31,22 +31,23 @@ import subprocess
 import weakref
 import signal
 import logging
-from systemd.journal import JournalHandler
 
 # 3rd party imports
 import gpiozero as GPIO
+from systemd.journal import JournalHandler
 
 # local imports
 # - none -
 
 
 class RaspiGPIOShutdown:
+    CONFIGFILE = "/etc/raspi-gpio3-shutdown.conf"
+    VALUESEVENT = ["press", "release", "hold", "holdrelease"]
+
     def __init__(self):
         self._finalizer = weakref.finalize(self, self.finalize)
-        
+
         self.isValidGPIO = False
-        self.CONFIGFILE = "/etc/raspi-gpio3-shutdown.conf"
-        self.valuesEvent = ["press", "release", "hold", "holdrelease"]
         self.config = None
         self.trigger_shutdown = False
 
@@ -56,7 +57,7 @@ class RaspiGPIOShutdown:
     @property
     def removed(self):
         return not self._finalizer.alive
-    
+
     def finalize(self):
         self.isValidGPIO = False
 
@@ -67,6 +68,7 @@ class RaspiGPIOShutdown:
         logHandler.setFormatter(log_fmt)
         log.addHandler(logHandler)
         log.setLevel(logging.INFO)
+        # log.setLevel(logging.DEBUG)
         self._log = log
         self._log.info("Initialized logging.")
 
@@ -96,7 +98,7 @@ class RaspiGPIOShutdown:
 
         buttonConfig = configGPIO["Button"].lower().split(",")
 
-        if not buttonConfig[0] in self.valuesEvent:
+        if not buttonConfig[0] in self.VALUESEVENT:
             self._log.error(
                 "Invalid shutdown configuration! Only 'PRESSED', 'RELEASED', 'HOLD' or 'HOLDRELEASE' allowed!"
             )
@@ -104,23 +106,25 @@ class RaspiGPIOShutdown:
 
         try:
             if len(buttonConfig) == 2:
-                hold_time = int(buttonConfig[1])
-                if hold_time <= 0:
+                hold_time = float(buttonConfig[1])
+                if hold_time <= 0.0:
                     raise
             else:
-                hold_time = 2
+                hold_time = 2.0
         except:
-            self._log.error("Invalid hold time! (only integer >0 specifying time in seconds allowed)")
+            self._log.error(
+                "Invalid hold time! (only float >0 specifying time in seconds allowed)"
+            )
             return false
-        
+
         try:
             # configure GPIO3 as input (with internal hard-wired I²C pullup)
             self.btn = GPIO.Button(3)
             self.btn.hold_time = hold_time
-            
+
             method_name = "config_" + buttonConfig[0]
-            self._log.info(f"Configure GPIO3 with '{method_name}'")
-            
+            self._log.info(f"Configure GPIO3 with action '{method_name}'")
+
             configbtn = getattr(self, method_name)
             configbtn()
 
@@ -131,26 +135,22 @@ class RaspiGPIOShutdown:
             return False
 
     def config_press(self):
-        """Configure button to trigger event handler when pressed
-        """
+        """Configure button to trigger event handler when pressed"""
         self._wasbtnheld = True
         self.btn.when_pressed = self.handle_btn_event
-    
+
     def config_release(self):
-        """Configure button to trigger event handler when released
-        """
+        """Configure button to trigger event handler when released"""
         self._wasbtnheld = True
         self.btn.when_released = self.handle_btn_event
-    
+
     def config_hold(self):
-        """Configure button to trigger event handler when held pressed for at least hold_time
-        """
+        """Configure button to trigger event handler when held pressed for at least hold_time"""
         self._wasbtnheld = True
         self.btn.when_held = self.handle_btn_event
-    
+
     def config_holdrelease(self):
-        """Configure button to trigger event handler when was held pressed and released again
-        """
+        """Configure button to trigger event handler when was held pressed and released again"""
         self._wasbtnheld = False
         self.btn.when_held = self.held_pressed_btn
         self.btn.when_released = self.handle_btn_event
@@ -160,12 +160,12 @@ class RaspiGPIOShutdown:
         if self._wasbtnheld:
             # set variable to quit service while-loop
             self.trigger_shutdown = True
-        
+
     def held_pressed_btn(self):
         self._log.info("Button at GPIO3 was held pressed.")
         self._wasbtnheld = True
-        
-        
+
+
 def sigterm_handler(_signo, _stack_frame):
     """clean exit on SIGTERM signal (when systemd stops the process)"""
     sys.exit(0)
@@ -185,7 +185,7 @@ try:
 
     if not shutdown.readConfigFile():
         sys.exit(-2)
-        
+
     if not shutdown.config["GPIO"]:
         log.error("Invalid configuration file! (no [GPIO] section)")
         sys.exit(-3)
@@ -202,6 +202,7 @@ try:
     log.info("Initiate system shutdown after GPIO3 button event handled.")
 
     import shlex
+
     cmd = shlex.split("sudo shutdown -h now")
     subprocess.call(cmd, shell=False)
 
