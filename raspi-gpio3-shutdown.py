@@ -115,7 +115,7 @@ class RaspiGPIOShutdown:
             self._log.error(
                 "Invalid hold time! (only float >0 specifying time in seconds allowed)"
             )
-            return false
+            return False
 
         try:
             # configure GPIO3 as input (with internal hard-wired I²C pullup)
