@@ -10,23 +10,22 @@ and on the other hand allows automatically restarting the system with another pr
 
 Installation / Maintenance
 --------------------------
-After download, configure the serive by editing the file *raspi-gpio3-shutdown.conf* (see Configuration_). 
-Then simply run the script ``install`` in the ``script`` sub-folder. It will download all required packages, 
+After download, configure the serive by editing the file ``raspi-gpio3-shutdown.conf`` (see Configuration_). 
+Then simply run the script ``install`` in the **script** sub-folder. It will download all required packages, 
 copy the files to their destinations, will register the service, and finally start it.
 
 For uninstall, use the second provided script ``uninstall``.
 
 If you like to change the configuration while your system is running, you might use the script ``restart``. 
-This will copy the changed configuration file to */etc* folder (overwrites previous version!), and then restart the service. 
+This will copy the changed configuration file to **/etc** folder (overwrites previous version!), and then restart the service. 
 
 Configuration
 -------------
 
 The configuration is defined in the file ``raspi-gpio3-shutdown.conf``. Before installation, you will find it in the
-folder where you unzipped the package files. After installation, the active version is in */etc* folder.
-The configuration file requires a section ``[GPIO]`` with one mandatory key ``Button``.
+folder where you unzipped the package files. After installation, the active version is in **/etc** folder.
 
-The ``Button`` key must be created based on this pattern::
+The configuration file requires a section ``[GPIO]`` with one mandatory key ``Button``. The ``Button`` key must be created based on this pattern::
 
   Button = press|release|hold|holdrelease[,holdtime_s]
 
@@ -38,6 +37,6 @@ The ``Button`` key must be created based on this pattern::
 
 e.g.
 
-``Button = holdrelease,2``
+``Button = holdrelease,1.5``
 
-configures pin GPIO3 to trigger the shutdown after the button has been held for at least 2s and was finally released.
+configures pin GPIO3 to trigger the shutdown after the button has been held for at least 1.5s and was finally released.
