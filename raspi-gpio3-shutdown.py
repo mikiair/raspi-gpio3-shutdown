@@ -3,8 +3,8 @@
 __author__ = "Michael Heise"
 __copyright__ = "Copyright (C) 2021 by Michael Heise"
 __license__ = "Apache License Version 2.0"
-__version__ = "1.0.0"
-__date__ = "09/04/2021"
+__version__ = "1.0.1"
+__date__ = "09/12/2021"
 
 """Configurable python service to run on Raspberry Pi
    and use pin GPIO3 (SCL) to trigger system shutdown
@@ -31,6 +31,7 @@ import subprocess
 import weakref
 import signal
 import logging
+import time
 
 # 3rd party imports
 import gpiozero as GPIO
@@ -197,7 +198,8 @@ try:
     log.info("Enter raspi-gpio3-shutdown service loop...")
 
     while not shutdown.trigger_shutdown:
-        pass
+        #pass
+        time.sleep(1)
 
     log.info("Initiate system shutdown after GPIO3 button event handled.")
 

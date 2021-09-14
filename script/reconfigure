@@ -2,6 +2,10 @@
 
 echo "Reconfigure raspi-gpio3-shutdown service..."
 
+set -e
+
+cd "$(dirname "$0")/.."
+
 sudo systemctl stop raspi-gpio3-shutdown
 sudo cp raspi-gpio3-shutdown.conf /etc
 sudo systemctl start raspi-gpio3-shutdown
