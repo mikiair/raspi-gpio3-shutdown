@@ -4,14 +4,20 @@ This is a configurable Python service to run on `Raspberry Pi <https://www.raspb
 
 **raspi-gpio3-shutdown** runs a Python script as a service on Raspberry Pi. It uses the `GPIO Zero <https://github.com/gpiozero/gpiozero>`_ package which allows 
 selecting among various underlying pin factories. Tested with `pigpio <http://abyz.me.uk/rpi/pigpio/index.html>`_ library only.
-The service expects a NO (normally open) button connected to GPIO3 (SCL) and any GND (ground) pin on the Raspi pin header.
-This will on one hand trigger system shutdown when the button releases a configured event, 
+The service expects a NO (normally open) button connected to GPIO3 (SCL) and any GND (ground) pin on the Raspberry pin header.
+This will on one hand shutdown the system when the button triggers a configured event, 
 and on the other hand allows automatically restarting the system with another press of the button.
+
+Required packages
+-----------------
+* pigpiod (or another supported pin factory library)
+* GPIO Zero
+* python3-systemd
 
 Installation / Maintenance
 --------------------------
 After download, configure the serive by editing the file ``raspi-gpio3-shutdown.conf`` (see Configuration_). 
-Then simply run the script ``install`` in the **script** sub-folder. It will download all required packages, 
+Then simply run the script ``install`` in the **script** sub-folder. It will download and install the required packages, 
 copy the files to their destinations, will register the service, and finally start it.
 
 For uninstall, use the second provided script ``uninstall``.
