@@ -7,8 +7,8 @@
 __author__ = "Michael Heise"
 __copyright__ = "Copyright (C) 2021 by Michael Heise"
 __license__ = "Apache License Version 2.0"
-__version__ = "1.0.1"
-__date__ = "09/12/2021"
+__version__ = "1.0.2"
+__date__ = "10/24/2021"
 
 #    Copyright 2021 Michael Heise (mikiair)
 #
@@ -106,8 +106,8 @@ class RaspiGPIOShutdown:
 
         if not buttonConfig[0] in self.VALUESEVENT:
             self._log.error(
-                "Invalid shutdown configuration! "+
-                "Only 'PRESSED', 'RELEASED', 'HOLD' or 'HOLDRELEASE' allowed!"
+                "Invalid shutdown configuration! "
+                + "Only 'PRESSED', 'RELEASED', 'HOLD' or 'HOLDRELEASE' allowed!"
             )
             return False
 
