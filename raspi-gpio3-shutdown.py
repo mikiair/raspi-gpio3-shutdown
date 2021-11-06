@@ -7,8 +7,8 @@
 __author__ = "Michael Heise"
 __copyright__ = "Copyright (C) 2021 by Michael Heise"
 __license__ = "Apache License Version 2.0"
-__version__ = "1.0.2"
-__date__ = "10/24/2021"
+__version__ = "1.0.3"
+__date__ = "11/06/2021"
 
 #    Copyright 2021 Michael Heise (mikiair)
 #
@@ -85,7 +85,7 @@ class RaspiGPIOShutdown:
     def readConfigFile(self):
         """Read the config file."""
         try:
-            self._log.info(f"Reading configuration file... '{self.CONFIGFILE}")
+            self._log.info(f"Reading configuration file... '{self.CONFIGFILE}'")
             self.config = configparser.ConfigParser()
             self.config.read(self.CONFIGFILE)
             return True
