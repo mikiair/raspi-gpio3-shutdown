@@ -16,20 +16,24 @@ Required packages
 
 Installation / Maintenance
 --------------------------
-After download, configure the serive by editing the file ``raspi-gpio3-shutdown.conf`` (see Configuration_). 
+Download raspi-gpio3-shutdown via **Code** button or from `Releases <https://github.com/mikiair/raspi-gpio3-shutdown/releases>`_ page (you most likely did already).
+Unzip the received file:
+
+   ``unzip raspi-gpio3-shutdown-main.zip -d ~/raspi-gpio-shutdown``
+
+Configure the service by editing the file ``raspi-gpio3-shutdown.conf`` (see Configuration_).
 Then simply run the script ``install`` in the **script** sub-folder. It will download and install the required packages, 
 copy the files to their destinations, will register the service, and finally start it.
 
 For uninstall, use the second provided script ``uninstall``.
 
-If you like to change the configuration while your system is running, you might use the script ``restart``. 
-This will copy the changed configuration file to **/etc** folder (overwrites previous version!), and then restart the service. 
+If you need to change the configuration after installation, you might use the script ``reconfigure`` after editing the source configuration file.
+This will stop the service, copy the changed configuration file to **/etc** folder (overwrites previous version!), and then start the service again.
 
 Configuration
 -------------
-
-The configuration is defined in the file ``raspi-gpio3-shutdown.conf``. Before installation, you will find it in the
-folder where you unzipped the package files. After installation, the active version is in **/etc** folder.
+The configuration is defined in the file ``raspi-gpio3-shutdown.conf``. Before installation, you will find the source file in the folder where you unzipped the package files. 
+After installation, the active version is in **/etc** folder.
 
 The configuration file requires a section ``[GPIO]`` with one mandatory key ``Button``. The ``Button`` key must be created based on this pattern::
 

@@ -7,10 +7,10 @@
 __author__ = "Michael Heise"
 __copyright__ = "Copyright (C) 2021 by Michael Heise"
 __license__ = "Apache License Version 2.0"
-__version__ = "1.0.3"
-__date__ = "11/06/2021"
+__version__ = "1.0.4"
+__date__ = "07/06/2024"
 
-#    Copyright 2021 Michael Heise (mikiair)
+#    Copyright 2021-2024 Michael Heise (mikiair)
 #
 #    Licensed under the Apache License, Version 2.0 (the "License");
 #    you may not use this file except in compliance with the License.
