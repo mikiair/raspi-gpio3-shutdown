@@ -9,6 +9,7 @@ cd "$(dirname "$0")/.."
 sudo systemctl stop raspi-gpio3-shutdown
 sudo cp -u raspi-gpio3-shutdown.conf /etc
 sudo systemctl start raspi-gpio3-shutdown
+sleep 3
 systemctl status raspi-gpio3-shutdown
 
 echo "Done."
